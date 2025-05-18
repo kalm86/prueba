@@ -9,7 +9,7 @@ import pandas as pd
 
 """ Gráfico de líneas: Representación del total de muertes por mes en Colombia, mostrando variaciones a lo largo del año. """
 def line_chart():
-    df = ConsultaDatos("concat(Anio,'-',Mes) as Periodo, Count(CodigoMuerte) as TotalMuertes", "NoFetal", "", "Anio, Mes")
+    df = ConsultaDatos("Anio || '-' || Mes as Periodo, Count(CodigoMuerte) as TotalMuertes", "NoFetal", "", "Anio, Mes")
     df = df.rename(columns=
                         {
                             0: "Periodo",
