@@ -63,7 +63,8 @@ def loadNoFetal():
     return dfNoFetal
 
 def Conectar():
-    oConexion = sqlite3.connect("src/data/estadisticas_muerte.db")
+    ruta = os.path.join(os.path.dirname(__file__), '..', 'data', 'estadisticas_muerte.db')
+    oConexion = sqlite3.connect(ruta)
     return oConexion
 
 def Desconectar(oConexion):
