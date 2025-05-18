@@ -1,8 +1,12 @@
 import pandas as pd
 import sqlite3
+import os
+import openpyxl
 
 def loadCodigoMuerte():
-    dfCodigoMuerte = pd.read_excel("src/data/CodigosMuerte.xlsx", sheet_name="Final")
+    ruta = os.path.join(os.path.dirname(__file__), '..', 'data', 'CodigosMuerte.xlsx')
+    #"src/data/CodigosMuerte.xlsx"
+    dfCodigoMuerte = pd.read_excel(ruta, engine="openpyxl", sheet_name="Final")
     dfCodigoMuerte = dfCodigoMuerte.rename(
                                             columns={
                                                 "Capítulo" : "Capitulo",
@@ -16,7 +20,9 @@ def loadCodigoMuerte():
     return dfCodigoMuerte
 
 def loadDivipola():
-    dfDivipola = pd.read_excel("src/data/Divipola.xlsx", sheet_name="Hoja1")
+    ruta = os.path.join(os.path.dirname(__file__), '..', 'data', 'Divipola.xlsx')
+    dfDivipola = pd.read_excel(ruta, engine="openpyxl", sheet_name="Hoja1")
+    #dfDivipola = pd.read_excel("src/data/Divipola.xlsx", sheet_name="Hoja1")
     dfDivipola = dfDivipola.rename(
                                         columns={
                                             "COD_DANE" : "CodigoDane",
@@ -30,7 +36,9 @@ def loadDivipola():
     return dfDivipola
 
 def loadNoFetal():
-    dfNoFetal = pd.read_excel("src/data/NoFetal.xlsx", sheet_name="No_Fetales_2019")
+    ruta = os.path.join(os.path.dirname(__file__), '..', 'data', 'NoFetal.xlsx')
+    dfNoFetal = pd.read_excel(ruta, engine="openpyxl", sheet_name="No_Fetales_2019")
+    #dfNoFetal = pd.read_excel("src/data/NoFetal.xlsx", sheet_name="No_Fetales_2019")
     dfNoFetal = dfNoFetal.rename(
                                         columns={
                                             "COD_DANE" : "CodigoDane",
