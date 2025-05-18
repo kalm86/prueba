@@ -8,7 +8,7 @@ from models.data_model import ProcesaDatawarehouse
 import pandas as pd
 
 """ Crea datawarehouse """
-ProcesaDatawarehouse()
+#ProcesaDatawarehouse()
 
 # Inicializa la aplicación Dash
 app = Dash(__name__, 
