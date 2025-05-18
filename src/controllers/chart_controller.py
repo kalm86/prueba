@@ -1,10 +1,11 @@
-from flask import render_template
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 from models.data_model import ConsultaDatos
 import json
 import requests
+from dash import Input, Output, html, dcc
+import pandas as pd
 
 """ Gráfico de líneas: Representación del total de muertes por mes en Colombia, mostrando variaciones a lo largo del año. """
 def line_chart():
@@ -31,7 +32,7 @@ def line_chart():
     )
 
 
-    return pio.to_html(fig, full_html=False)
+    return fig
 
 def bar_chart():
     df = ConsultaDatos("NoFetal.CodigoDane, Divipola.DescripcionMpo, Count(CodigoMuerte) as TotalMuertes", "NoFetal INNER JOIN Divipola ON Divipola.CodigoDane = NoFetal.CodigoDane", "substr(CodigoMuerte,1,3)='X95'", "NoFetal.CodigoDane, Divipola.DescripcionMpo ORDER BY TotalMuertes DESC limit 5")
@@ -50,7 +51,7 @@ def bar_chart():
         yaxis_title="Número de Muertes",
         title_x=0.5
     )
-    return pio.to_html(fig, full_html=False)
+    return fig
 
 def map_chart():
     df = ConsultaDatos(
@@ -90,7 +91,7 @@ def map_chart():
         title_x=0.5,
         margin={"r":0, "t":50, "l":0, "b":0}
     )
-    return pio.to_html(fig, full_html=False)
+    return fig
 
 
 def pie_chart():
@@ -111,7 +112,7 @@ def pie_chart():
     fig.update_traces(textposition="inside", textinfo="percent+label")
     fig.update_layout(title_x=0.5)
 
-    return pio.to_html(fig, full_html=False)
+    return fig
 
 def tabla():
     df = ConsultaDatos(
@@ -128,13 +129,25 @@ def tabla():
     df.index.name = "No"
     df_reset = df.reset_index()
 
-    html_table = df_reset.to_html(
-        classes="table table-striped table-hover",
-        index=False,
-        border=0
-    )
+    #html_table = df_reset.to_html(
+    #    classes="table table-striped table-hover",
+    #    index=False,
+    #    border=0
+    #)
 
-    html_table = html_table.replace("<th>", "<th class=\"text-center\">")
+    #html_table = html_table.replace("<th>", "<th class=\"text-center\">")
+    html_table = html.Table([
+                    html.Thead(
+                        html.Tr([
+                            html.Th(col, className="text-center") for col in df.columns
+                        ])
+                    ),
+                    html.Tbody([
+                        html.Tr([
+                            html.Td(df.iloc[i][col]) for col in df.columns
+                        ]) for i in range(len(df))
+                    ])
+                ], className="table table-striped table-hover")
 
     return html_table
 
@@ -168,7 +181,7 @@ def histograma():
         bargap=0.1,
         title_x=0.5
     )
-    return pio.to_html(fig, full_html=False)
+    return fig
 
 
 def bar_api():
@@ -198,9 +211,33 @@ def bar_api():
         xaxis_tickangle=-45
     )
 
-    return pio.to_html(fig, full_html=False)
+    return fig
 
+def realizar_callback(app):
 
+    @app.callback(
+        Output("plot-container", "children"),
+        Input("url", "pathname")
+    )
+    def mostrar_grafico(pathname):
+        if pathname == "/map":
+            fig = map_chart()
+        elif pathname == "/line":
+            fig = line_chart()
+        elif pathname == "/bar":
+            fig = bar_chart()
+        elif pathname == "/pie":
+            fig = pie_chart()
+        elif pathname == "/tabla":
+            return tabla()
+        elif pathname == "/hist":
+            fig = histograma()
+        elif pathname == "/bar_api":
+            fig = bar_api()
+        else:
+            return html.P("Bienvenido.")
+
+        return dcc.Graph(figure=fig)
 
 
 
