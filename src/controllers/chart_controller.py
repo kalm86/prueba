@@ -235,7 +235,7 @@ def realizar_callback(app):
         elif pathname == "/bar_api":
             fig = bar_api()
         else:
-            return html.P("Bienvenido.")
+            return html.P("Elaborado por: Wilfer Salgar / Kelvin Martinez.")
 
         return dcc.Graph(figure=fig)
 
